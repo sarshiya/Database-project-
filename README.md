@@ -60,7 +60,7 @@ Developed as part of the BF768 Spring 2024 course at Boston University School of
 - RNA-seq counts and metadata are processed in `counts.py`
 - `Initial_Downstream_Deseq2.R` handles downstream differential expression using DESeq2.
 
-## 🔒 Data Availability
+## Data Availability
 
 Due to the sensitive and confidential nature of the RNA-seq and metadata used in this project, the dataset is **not publicly available** in this repository.
 
@@ -93,7 +93,7 @@ However, the repository **includes all frontend and backend code** required to r
 
 ---
 
-## 👩‍🔬 Authors
+## Authors
 
 - Abhiuday Singh Parihar  
 - Arshiya Saxena  
@@ -103,13 +103,13 @@ However, the repository **includes all frontend and backend code** required to r
 
 ---
 
-## 📄 License
+## License
 
 MIT License — free to use, distribute, and modify with proper attribution.
 
 ---
 
-## 🧠 Acknowledgements
+## Acknowledgements
 
 Thanks to the **Boston University Bioinformatics Department**, and our mentors **Dr. Zhang** and **Dr. Benson**, for their invaluable guidance and support.
 ```
