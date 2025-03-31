@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>opioid database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333; /* Dark gray font color */
+            background-color: #f4f4f4; /* Light gray background color */
+        }
+
+        header {
+            padding: 20px;
+            padding-bottom: 20px;
+            text-align: center;
+            color: #333; /* Dark gray font color */
+            display: flex;
+            align-items: center;
+            font-size: 20px; 
+            font-weight: bold;         
+            background-image: url('https://images.unsplash.com/photo-1454117096348-e4abbeba002c?ixlib=rb-4.0.3');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo {
+            width: 100px;             
+            height: auto; 
+            margin-right: 20px; 
+        }
+        .header-text {
+            flex-grow: 1; 
+            text-align: center;
+            margin-right: 135px; 
+        }
+
+        nav {
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #ccc; /* Light gray background color */
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333; /* Dark gray font color */
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px; /* Smaller font size */
+        }
+        .logo {
+            width: 120px; /* Adjust the width to your desired size */
+            height: auto;
+            margin-bottom: 10px; /* Maintain aspect ratio */
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ccc; /* Light gray background color */
+            min-width: 160px;
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: #333; /* Dark gray font color */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px; /* Smaller font size */
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd; /* Slightly darker gray background color */
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .subtab-button {
+    background-color: #666; /* Dark gray background color */
+    color: #fff; /* White font color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Adjust font size as needed */
+    margin-right: 10px; /* Adjust margin between buttons */
+}
+
+.subtab-button:hover {
+    background-color: #555; /* Darker gray background color on hover */
+}
+
+
+        .tab {
+            background-color: #666; /* Dark gray background color */
+            color: #f4f4f4; /* Light gray font color */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-size: 16px; /* Larger font size */
+            font-weight: bold; /* Bold font weight */
+            letter-spacing: 1px; /* Increased letter spacing */
+        }
+
+        .panel {
+            background-color: #f4f4f4; /* Light gray background color */
+            color: #333; /* Dark gray font color */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 14px; /* Smaller font size */
+        }
+
+        footer {
+            color: #333; /* Dark gray font color */
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ccc; /* Light gray background color */
+            font-size: 14px; /* Smaller font size */
+        }
+    </style>
+
+</head>
+<body>
+
+<header>
+    <img src="LOGO.jpg" alt="Website Logo" class="logo">
+    <div class="header-text">
+        <h1>OpioGeneDB</h1>
+    </div>
+</header>
+
+<nav>
+    <a href="#" onclick="loadContent('home')">Home</a>
+    <a href="#" onclick="loadContent('about')">About</a>
+    <div class="dropdown">
+        <a href="#" class="dropbtn">Data</a>
+        <div class="dropdown-content">
+            <a href="#" onclick="loadContent('metadata')">Metadata</a>
+            <a href="#" onclick="loadContent('counts')">Counts Data</a>
+            <a href="#" onclick="loadContent('genes')">Differential Genes</a>
+            <a href="#" onclick="loadContent('gsea')">GSEA</a>
+            <a href="#" onclick="loadContent('cna')">CNA</a>
+        </div>
+    </div>
+    <a href="#" onclick="loadContent('help')">Contact</a>
+    <a href="#" onclick="loadContent('help')">Help</a>
+</nav>
+
+<section id="content">
+    <!-- Content will be loaded here -->
+</section>
+
+<footer>
+    <p style="font-size: 13px; font-weight: bold;">&copy; This webpage has been developed by Abhiuday Singh Parihar, Arshiya Saxena and Simran Singh with Dr. Huiping Zhang as faculty advisor at Boston University School of Medicine as a part of BF768 Spring 2024 course by Dr. Gary Benson</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function loadContent(contentType) {
+        var contentElement = document.getElementById('content');
+        switch (contentType) {
+            case 'home':
+                contentElement.innerHTML = '<p style="font-size: 24px;">The project\'s overarching objective is to streamline the management and interpretation of RNA-seq data obtained from placental cells, a pivotal endeavor in elucidating the molecular underpinnings of placental function and response to external stimuli. Its multifaceted interface encompasses distinct sections dedicated to metadata retrieval, count data examination, and the exploration of differentially expressed genes, with a particular focus on elucidating the impact of opioid drug consumption patterns across varying temporal contexts. By providing a centralized repository for accessing sample-specific information and facilitating the visualization of DESeq-2-generated plots within a unified platform, this database stands poised to revolutionize the study of placental biology and pharmacology. Such comprehensive resources are invaluable in advancing our understanding of placental physiology and its relevance to human health and disease, offering researchers a robust toolkit for hypothesis generation and data-driven exploration.</p>';
+                break;
+            case 'about':
+                contentElement.innerHTML = '<p style="font-size: 20px;">The project focuses on managing and analyzing RNA-seq data obtained from placental cells. Placenta, a vital organ during pregnancy, plays a crucial role in supporting fetal development and maintaining maternal-fetal health. By examining RNA-seq data, researchers can gain insights into gene expression patterns within placental cells, shedding light on their functions and responses to various stimuli, including opioid drug consumption. The project\'s interface is designed to facilitate easy access to different aspects of the data. It includes sections dedicated to metadata, counts data, and analysis of differentially expressed genes (DEGs). Metadata provides essential information about each sample, such as the characteristics of the individuals from whom the samples were obtained and experimental conditions. Count data represents the number of RNA-seq reads mapped to each gene, serving as the basis for quantifying gene expression levels. Analysis of DEGs allows researchers to identify genes whose expression levels significantly change in response to opioid drug consumption over time, offering valuable insights into the molecular mechanisms underlying the effects of these drugs on placental cells. One of the key features of the project is its integration of DESeq-2 plots, which visualize gene expression differences between different conditions or groups. DESeq-2 is a widely used tool for differential gene expression analysis in RNA-seq data, and its plots provide intuitive visual representations of gene expression patterns. By incorporating DESeq-2 plots into the platform, researchers can easily explore and interpret the results of their analyses, gaining a deeper understanding of the impact of opioid drug consumption on placental gene expression. Overall, the project holds significant promise for advancing our understanding of placental biology and pharmacology. By providing a centralized repository for RNA-seq data and analysis tools, it empowers researchers to investigate the effects of opioid drugs on placental cells in a comprehensive and accessible manner. This knowledge could ultimately inform efforts to improve maternal and fetal health outcomes in populations affected by opioid use.</p>';
+                break;
+            case 'metadata':
+                loadMetadata();
+                break;
+            case 'counts':
+                loadCountsData();
+                break;
+            case 'genes':
+                contentElement.innerHTML = '<h2>Differential Genes Content</h2><p>This is the Differential Genes content.</p>';
+                break;
+            case 'gsea':
+                loadGSEA();
+                break;
+            case 'contact':
+                contentElement.innerHTML = '<h2>TEAM MEMBERS</h2><p>This is the Contact content.</p>';
+                break;
+            case 'help':
+                loadHelpContent();
+                break;
+            default:
+                contentElement.innerHTML = '<h2>Default Content</h2><p>This is the default content.</p>';
+                break;
+        }
+    }
+
+	// Function to load content from metadata.html
+	function loadMetadata() {
+	    var contentElement = document.getElementById('content');
+	    contentElement.innerHTML = `
+	        <h2 style="padding-left: 10px;">Metadata Search</h2>
+	        <div style="padding-left: 20px;">
+	            <h3>Search by SampleID</h3>
+	            <input type="text" id="sampleIdInput">
+	            <button id="searchButton">Search</button>
+	            <button onclick="resetOptions()">Reset</button>
+	            <button id="helpButton">Help</button>
+	        </div>
+    
+	        <h3 style="padding-left: 10px;">Select Filters</h3>
+	        <div style="padding-left: 20px;">
+	            <h3>Select Batch<button id="helpButton">&#128269;</button></h3>
+	            <div id="Batch-options" style="display: inline;">
+	                <span style="margin-right: 5px;"></span>
+	                <input type="radio" id="Batch1" name="Batch" value="1">
+		        <label for="Batch1">1</label>
+	                <span style="margin-right: 10px;"></span>
+	                <input type="radio" id="Batch2" name="Batch" value="2">
+	                <label for="Batch2">2</label>
+	                <span style="margin-right: 10px;"></span>
+        	        <input type="radio" id="BatchAll" name="Batch" value="all">
+	               	 <label for="BatchAll">All</label>
+        	        <span style="margin-right: 10px;"></span>
+        	    </div>
+	        <h3>Select Opioid Control<button id="helpButton">&#128269;</button></h3>
+    		<div id="OPIOIDCONTROL-options" style="display: inline;">
+    			<span style="margin-right: 5px;"></span>
+    			<input type="radio" id="Control" name="OPIOIDCONTROL" value="0">
+    			<label for="control">Control</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="Opioid" name="OPIOIDCONTROL" value="1">
+    			<label for="opioid">Opioid</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="NTX" name="OPIOIDCONTROL" value="2">
+    			<label for="ntx">NTX</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="allOpioidControl" name="OPIOIDCONTROL" value="all">
+    			<label for="all">All</label>
+    			<span style="margin-right: 10px;"></span>
+    		</div>
+    		<h3>Select Infant Sex<button id="helpButton">&#128269;</button></h3>
+    		<div id="SEX-options" style="display: inline;">
+    			<span style="margin-right: 5px;"></span>
+    			<input type="radio" id="Male" name="OPIOIDCONTROL" value="0">
+    			<label for="control">Male</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="Control" name="OPIOIDCONTROL" value="0">
+    			<label for="control">Female</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="Control" name="OPIOIDCONTROL" value="0">
+    			<label for="control">All</label>
+    			<span style="margin-right: 10px;"></span>
+    		</div>
+    		<h3>Select Race<button id="helpButton">&#128269;</button></h3>
+    		<div id="RACE-options" style="display: inline;">
+    			<span style="margin-right: 5px;"></span>
+    			<input type="radio" id="" name="" value="">
+    			<label for="">White</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="Black" name="Race" value="2">
+    			<label for="Black">Black</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id="Other/Unknown" name=" " value=" ">
+    			<label for=" ">Other/Unknown</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">All</label>
+    			<span style="margin-right: 10px;"></span>
+    		</div>
+    
+    		<h3>Select Ethnicity<button id="helpButton">&#128269;</button></h3>
+    		<div id="Ethnicity-options" style="display: inline;">
+    			<span style="margin-right: 5px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Non-Hispanic</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Hispanic</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Unknown</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">All</label>
+    			<span style="margin-right: 10px;"></span>
+    		</div>
+    		<h3>Select Opioid Type<button id="helpButton">&#128269;</button></h3>
+    		<div id="OPIOIDTYPE-options" style="display: inline;">
+    			<span style="margin-right: 5px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Buprenorphine</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Methadone</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=" ">Illicit opoids</label>
+    			<span style="margin-right: 10px;"></span>
+    			<input type="radio" id=" " name=" " value=" ">
+    			<label for=N/A ">N/A</label>
+    			<span style="margin-right: 10px;"></span>
+			<input type="radio" id=" " name=" " value=" ">
+		    	<label for=" ">All</label>
+		    </div>
+		    <br><br>
+		<button onclick="resetOptions()">Reset Filters</button>
+	        
+    
+	        <div id="placenta_opoid_meta">
+	            <!-- Table or chart will be displayed here -->
+	        </div>
+	        <h3>Generate</h3>
+	        <div>
+	            <button style="padding: 12px 24px; font-size: 16px;" onclick="generateTable()">Generate Table</button>
+
+	        </div>
+	        </div><br><br><br><br>
+		<!-- Add this table directly into your HTML -->
+		<table id="metadataTable" style="margin: 0 auto; border-collapse: collapse; width: 80%; border: 1px solid #ccc;">
+		    <thead>
+		        <tr>
+		            <th style="border: 1px solid #ccc; padding: 8px;">SampleID</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">Batch</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">OPIOIDCONTROL</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">SEX</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">GA</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">BW</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">RACE</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">ETHNICITY</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">OPIOIDTYPE</th>
+		            <th style="border: 1px solid #ccc; padding: 8px;">RIN</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-002</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">41.7</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3770</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">5.8</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-006</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">38.9</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3505</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">8.4</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-008</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+ 		           <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">38.4</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">2880</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">8.0</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-009</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">38.1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3240</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">7.4</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-020</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">39.4</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3975</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">4.4</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">BMC-029</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">37.4</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">2535</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">5.7</td>
+		        </tr>
+		        <tr>
+		            <td style="border: 1px solid #ccc; padding: 8px;">GEN-0264</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">37.2</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3333</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">0</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+		            <td style="border: 1px solid #ccc; padding: 8px;">3.8</td>
+		        </tr>
+		        <!-- Add more rows as needed -->
+		    </tbody>
+		</table>
+
+		<br><br><br><br><br><br><br><br><br><br>
+	    `;
+
+	    // Add event listeners and functions here
+	
+	    // Function to reset filter options
+	    function resetOptions() {
+	        // Implement reset functionality here
+	    }
+
+	    // Function to handle search button click
+	    $("#searchButton").click(function(){
+	        // Implement search functionality here
+	    });
+
+	    // Function to handle filter options
+	    $(".filterOptions").click(function(){
+	        // Implement filter functionality here
+	    });
+
+	    // Function to handle generate button click
+	    $("#generateButton").click(function(){
+	        // Implement generate functionality here
+	    });
+	}
+
+	function loadCountsData() {
+	    var contentElement = document.getElementById('content');
+	    contentElement.innerHTML = `
+	        <div class="filter-box" style="text-align: center;">
+	            <label for="varianceSlider">Filter Genes Based on % Variance:</label>
+	            <input type="range" id="varianceSlider" name="varianceSlider" min="0" max="2000" value="10" oninput="updateSliderValue(this.value)">
+	            <span id="varianceValue">10%</span>
+	            <button onclick="applyFilter()">Apply Filter</button>
+	        </div>
+	        <br><br><br>
+	        <div id="subcontent" style="text-align: center;">
+	            <img id="filteredImg" src="default_heatmap.PNG" alt="Your Image" style="max-width: 100%; height: auto;">
+	        </div>
+	    `;
+	}
+
+
+	function applyFilter() {
+	    var sliderValue = document.getElementById("varianceSlider").value;
+	    var img = document.getElementById("filteredImg");
+	    // Perform filtering based on variance value
+	    img.style.filter = "brightness(" + sliderValue + "%)";
+	}
+
+	function updateSliderValue(value) {
+	    document.getElementById("varianceValue").textContent = value + "%";
+	}
+
+    function loadGSEA() {
+    var contentElement = document.getElementById('content');
+    contentElement.innerHTML = `
+        <div id="subtabs" class="panel">
+            <button onclick="loadGSEAContent('subtab1')">Subtab 1</button>
+            <button onclick="loadGSEAContent('subtab2')">Subtab 2</button>
+        </div>
+        <div id="subcontent">
+            <!-- Sub-content will be loaded here -->
+        </div>
+        <div id="gsea-data-container" style="display: none;"></div>
+    `;
+}
+
+function loadGSEAContent(subtab) {
+    var subContentElement = document.getElementById('subcontent');
+    switch (subtab) {
+        case 'subtab1':
+            subContentElement.innerHTML = `
+                <h2>Subtab 1 Content</h2>
+                <form id="gsea-form">
+                    <label>Select regulation:</label>
+                    <div>
+                        <input type="radio" id="upregulated" name="regulation" value="upregulated" onchange="showDropdown()">
+                        <label for="upregulated">Upregulated</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="downregulated" name="regulation" value="downregulated" onchange="showDropdown()">
+                        <label for="downregulated">Downregulated</label>
+                    </div>
+                    <div id="dropdown-container" style="display: none;">
+                        <label for="dropdown">Select an option:</label>
+                        <select id="dropdown" onchange="showGSEAData()">
+                            <option value="">--Select an option--</option>
+                        </select>
+                    </div>
+                </form>
+            `;
+            break;
+        case 'subtab2':
+            subContentElement.innerHTML = `
+                <h2>Subtab 2 Content</h2>
+                <label for="pAdjustSlider">Adjust p-Value:</label>
+                <input type="range" min="10" max="30" value="1" step="1" id="pAdjustSlider" onchange="updatePAdjust()">
+                <p id="pAdjustValue">Current p-Value: 1</p>
+                <!-- Placeholder for the plot -->
+                <div id="plot_gsea"></div>
+            `;
+            break;
+    }
+}
+
+
+function showDropdown() {
+    var dropdownContainer = document.getElementById('dropdown-container');
+    var dropdown = document.getElementById('dropdown');
+    var upregulated = document.getElementById('upregulated').checked;
+    var downregulated = document.getElementById('downregulated').checked;
+
+    // Clear existing options
+    dropdown.innerHTML = '<option value="">--Select an option--</option>';
+
+    if (upregulated) {
+        dropdownContainer.style.display = 'block';
+        // Add options for upregulated pathways
+        var upregulatedPathways = [
+            'ABBUD_LIF_SIGNALING_1_DN',
+            'ABBUD_LIF_SIGNALING_1_UP',
+            'ABBUD_LIF_SIGNALING_2_UP',
+            'ABE_INNER_EAR',
+            'ABE_VEGFA_TARGETS',
+            'ABE_VEGFA_TARGETS_2HR',
+            'ABE_VEGFA_TARGETS_30MIN',
+            'ABRAHAM_ALPC_VS_MULTIPLE_MYELOMA_DN',
+            'ABRAHAM_ALPC_VS_MULTIPLE_MYELOMA_UP'
+        ];
+
+        upregulatedPathways.forEach(function(pathway) {
+            var option = document.createElement('option');
+            option.value = pathway;
+            option.text = pathway;
+            dropdown.options.add(option);
+        });
+    } else if (downregulated) {
+        dropdownContainer.style.display = 'block';
+        // Add options for downregulated pathways
+        var downregulatedPathways = [
+            'ZIRN_TRETINOIN_RESPONSE_WT1_DN',
+            'ZIRN_TRETINOIN_RESPONSE_WT1_UP',
+            'ZWANG_CLASS_1_TRANSIENTLY_INDUCED_BY_EGF',
+            'ZWANG_CLASS_2_TRANSIENTLY_INDUCED_BY_EGF',
+            'ZWANG_CLASS_3_TRANSIENTLY_INDUCED_BY_EGF',
+            'ZWANG_DOWN_BY_2ND_EGF_PULSE',
+            'ZWANG_EGF_INTERVAL_DN',
+            'ZWANG_EGF_INTERVAL_UP',
+            'ZWANG_EGF_PERSISTENTLY_DN',
+            'ZWANG_EGF_PERSISTENTLY_UP'
+        ];
+
+        downregulatedPathways.forEach(function(pathway) {
+            var option = document.createElement('option');
+            option.value = pathway;
+            option.text = pathway;
+            dropdown.options.add(option);
+        });
+    } else {
+        dropdownContainer.style.display = 'none';
+    }
+}
+
+function updatePAdjust() {
+    // Get the slider value
+    var sliderValue = document.getElementById("pAdjustValue").value;
+
+    // Send an AJAX request to your Python script
+    $.ajax({
+        url: '/cgi-bin/Gsea_func.py', // URL to your Python script
+        type: 'POST', // Use POST method
+        data: { sliderValue: sliderValue }, // Send slider value as data
+        success: function(response) {
+            // Update the plot in the HTML content
+            var plotElement = $('#plot_gsea');
+            plotElement.html('<img src="data:image/png;base64,' + response + '" />');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+
+</script>
+
+</body>
+</html>
