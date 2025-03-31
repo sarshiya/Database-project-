@@ -1,0 +1,255 @@
+Create a static HTML file called opoid.html and a python file
+called metadata_team11.py. The objectives are:
+• the html file will contain html elements and javascript that sends AJAX requests to the
+python program and produces a table and a bar plot from the AJAX returned results 
+with a reset option for all the input  function (forms in the html).
+• The python program will accept AJAX requests, query the Team_11 database, and send
+back data to the html page. 
+
+HTML file:
+The html <head> should load jquery and google charts libraries9490-=98.
+The html <body> should contain one parts, each with an <h2> header, called as Metadata search
+-  A text box to take the name of a SampleID, a button that says
+“Search”, it should have a help and a reset option also.
+- 5 radiobuttons for 6 columns named 'Batch', 'OPIOIDCONTROL', 'SEX', 'RACE', 'ETHNICITY' and 'OPIOIDTYPE'
+and a <div> Which holds the whole table called placenta_opoid_meta 
+but user can fiter the data of the table from either by searching the sampleid containing the
+search SampleID (regexp search). or by using the radiobuttons.
+- each radiobutton should have its own reset and help button
+- After user click on search or apply the filters from the radio button The last button should be GENERATE TABLE.
+- If the user do not click on any radiobutton or search for any sample id and directly click on generate plot then it 
+should give the whole table.
+
+ 
+The javascript <script> should contain functions that provide the following actions:
+3. When the “Search” button is clicked,
+a. Check that there is text in the SampleID  textbox and return an alert if there
+isn’t, otherwise:
+b. erase any existing table or error message from the <div>
+4. When the “find miRNAs” button is clicked,
+a. check that the input is valid (three to eight characters, all from the ACGU
+alphabet) and return an alert if it’s not, otherwise:
+b. erase any existing table or error message
+c. send an AJAX request to the python program, with the search sampleid and a
+selector variable indicating the request is for the sampleid search. (The selector
+will be part of the input data sent to the python program as selector:”table”.)
+d.send an AJAX request to the python program, with the radiobuttons column filter
+ indicating the request is for the filtering the data. (The selector
+will be part of the input data sent to the python program as selector:”table”.)
+d. if the return data is empty, print an error message in the <div>: “There were no
+sample matching your sampleid [sequencer entered]” with the entered
+sequence replacing the square brackets, otherwise:
+e. format the return data for a table
+f. display the new table in the appropriate <div>
+
+Python Program:
+The python file should contain code that receives input from the AJAX requests, queries the
+miRNA database and returns results. Your program should:
+5. Check for form data and if there is none, return an empty page (only return
+print("Content-type: text/html\n"))
+6. Use the selector variable to determine if the request is for the histogram or the table
+7. Query the database and return the desired results as a JSON object (using
+print(json.dumps(results))
+
+<h3>Select Infant Sex</h3>
+<div id="SEX-options" style="display: inline;">
+    <span style="margin-right: 5px;"></span>
+    <span>&#128269;</span> <!-- Magnifying Glass emoji -->
+    <input type="radio" id="Female" name="SEX" value="0">
+    <label for="Female">Female</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="Male" name="SEX" value="1">
+    <label for="Male">Male</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="allSex" name="SEX" value="all">
+    <label for="All">ALL</label>
+    <span style="margin-right: 10px;"></span>
+    <button onclick="resetOptions()">Reset</button>
+</div> THE FILTER FOR EACH COLUMN SHOULD BE LIKE THIS
+
+function loadMetadata() {
+    var contentElement = document.getElementById('content');
+    contentElement.innerHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opioid Data</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        // JavaScript functions for AJAX requests and DOM manipulation
+        $(document).ready(function () {
+            // Function to handle SampleID search
+            $("#searchBtn").click(function () {
+                var sampleID = $("#sampleID").val();
+                if (sampleID.trim() === "") {
+                    alert("Please enter a SampleID.");
+                } else {
+                    // AJAX request to Python program for SampleID search
+                    $.get("metadata_team11.py", {selector: "sampleID", sampleID: sampleID}, function (response) {
+                        // Handle response and update table
+                        updateTable(response);
+                    });
+                }
+            });
+
+            // Function to handle radio button filters
+            $("input[name='filter']").click(function () {
+                var filter = $(this).val();
+                // AJAX request to Python program for column filtering
+                $.get("metadata_team11.py", {selector: "filter", filter: filter}, function (response) {
+                    // Handle response and update table
+                    updateTable(response);
+                });
+            });
+
+            // Function to update table based on AJAX response
+            function updateTable(response) {
+                // Code to format and display the table
+                // Example: $("#placenta_opoid_meta").html(response);
+            }
+        });
+    </script>
+</head>
+<body>
+<h2>Metadata search</h2>
+<div>
+    <label for="sampleID">SampleID:</label>
+    <input type="text" id="sampleID">
+    <button id="searchBtn">Search</button>
+    <button id="resetSearch">Reset</button>
+    <button id="helpSearch">Help</button>
+</div>
+
+<h3>Select Opioid Control</h3>
+<div id="OPIOIDCONTROL-options" style="display: inline;">
+    <span style="margin-right: 5px;"></span>
+    <span>&#128269;</span> <!-- Magnifying Glass emoji -->
+    <input type="radio" id="Control" name="OPIOIDCONTROL" value="0">
+    <label for="control">Control</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="Opioid" name="OPIOIDCONTROL" value="1">
+    <label for="opioid">Opioid</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="NTX" name="OPIOIDCONTROL" value="2">
+    <label for="ntx">NTX</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="allOpioidControl" name="OPIOIDCONTROL" value="all">
+    <label for="all">ALL</label>
+    <span style="margin-right: 10px;"></span>
+    <button onclick="resetOptions()">Reset</button>
+</div>
+<br><br>
+
+<h3>Select Infant Sex</h3>
+<div id="SEX-options" style="display: inline;">
+    <span style="margin-right: 5px;"></span>
+    <span>&#128269;</span> <!-- Magnifying Glass emoji -->
+    <input type="radio" id="Female" name="SEX" value="0">
+    <label for="Female">Female</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="Male" name="SEX" value="1">
+    <label for="Male">Male</label>
+    <span style="margin-right: 10px;"></span>
+    <input type="radio" id="allSex" name="SEX" value="all">
+    <label for="All">ALL</label>
+    <span style="margin-right: 10px;"></span>
+    <button onclick="resetOptions()">Reset</button>
+</div>
+<br><br>
+
+<!-- Add similar sections for Race, Ethnicity, and Opioid Type filters -->
+
+<div id="placenta_opoid_meta">
+    <!-- Table will be displayed here -->
+</div>
+
+<button id="generateTable">GENERATE TABLE</button>
+
+</body>
+</html>`;
+}
+
+
+
+    // Function to handle sample search
+    function searchSample() {
+        var searchTerm = document.getElementById('sample-search').value.trim();
+        // Perform search logic, retrieve data from server/database, etc.
+        // Display search results in the 'metadata-results' div
+        var metadataResultsElement = document.getElementById('metadata-results');
+        // Example: Displaying search results
+        metadataResultsElement.innerHTML = `
+            <h2>Search Results for Sample ID: ${searchTerm}</h2>
+            <p>Sample information goes here...</p>
+        `;
+    }
+    
+    // Function to handle metadata submission
+    function submitMetadata() {
+        var selectedOption = document.querySelector('input[name="OPIOIDCONTROL"]:checked');
+        var selectedValue = selectedOpioidControl ? selectedOpioidControl.value : null;
+	
+	var selectedSex = document.querySelector('input[name="SEX"]:checked');
+	var selectedSexValue = selectedSex ? selectedSex.value : null;
+
+	var selectedRace = document.querySelector('input[name="RACE"]:checked');
+	var selectedRaceValue = selectedRace ? selectedRace.value : null;
+
+	var selectedEthnicity = document.querySelector('input[name="ETHNICITY"]:checked');
+	var selectedEthnicityValue = selectedEthnicity ? selectedEthnicity.value : null;
+
+	var selectedOpioidType = document.querySelector('input[name="OPIOIDTYPE"]:checked');
+	var selectedOpioidTypeValue = selectedOpioidType ? selectedOpioidType.value : null;
+
+        var searchTerm = document.getElementById('sample-search').value.trim();
+        
+	// Perform actions based on selectedValue and searchTerm
+        console.log("Selected Opioid Control Category:", selectedValue);
+	console.log("Selected Sex Category:", selectedSexValue);
+	console.log("Selected Race Category:", selectedRaceValue);
+	console.log("Selected Ethnicity Category:", selectedEthnicityValue);
+	console.log("Selected Opioid Type Category:", selectedOpioidTypeValue);
+        console.log("Search Term (Sample ID):", searchTerm);
+    }
+    
+    // Function to reset specific option
+    function resetOption(option) {
+	// Send a request to the server to reset the specified option
+	$.get("metadata_team_11.py", { resetOption: option })
+	    .done(function(response) {
+		// Display success message
+		console.log(response.message);
+		// Clear radio buttons for the specific option
+		var optionRadios = document.getElementsByName(option);
+		for (var i = 0; i < optionRadios.length; i++) {
+		    optionRadios[i].checked = false;
+		}
+            },
+	    .fail(function(xhr, status, error) {
+		// Display error message
+		console.error("Error:", error);
+	});
+    }
+
+    // Function to handle reset button click for specific options
+    function handleResetOption(option) {
+    	resetOption(option);
+    }
+    // Reset button click handlers for specific options
+    document.getElementById('reset-opioid-control').addEventListener('click', function() {
+       handleResetOption('OPIOIDCONTROL');
+    });
+    document.getElementById('reset-sex').addEventListener('click', function() {
+       handleResetOption('SEX');
+    });
+    document.getElementById('reset-race').addEventListener('click', function() {
+        handleResetOption('RACE');
+    });
+    document.getElementById('reset-ethnicity').addEventListener('click', function() {
+        handleResetOption('ETHNICITY');
+    });
+    document.getElementById('reset-opioid-type').addEventListener('click', function() {
+         handleResetOption('OPIOIDTYPE');
+    });
